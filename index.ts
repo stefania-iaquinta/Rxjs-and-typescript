@@ -1,7 +1,15 @@
 // Import stylesheets
-import { debounceTime, filter, fromEvent, interval, map, timer } from 'rxjs';
-import { of } from 'rxjs/internal/observable/of';
-import './style.css';
+import {
+  debounceTime,
+  distinct,
+  filter,
+  fromEvent,
+  interval,
+  map,
+  timer,
+  distinctUntilChanged,
+} from 'rxjs';
+import { ajax } from 'rxjs/ajax';
 
 // OPERATORI DI CREAZIONE
 
@@ -29,8 +37,11 @@ fromEvent(document.getElementById('input'), 'input')
     //inserire una catena di operatori che possono anche manipolare lo strem di dati
     map((e) => (e.target as HTMLInputElement).value),
     filter((text) => text.length > 3),
-    debounceTime(1000)
+    debounceTime(1000),
+    distinctUntilChanged()
   )
   .subscribe((val) => {
-    console.log(val);
+    ajax
+      .getJSON<any[]>(`https://jsonplaceholder.typicode.com/users?q=${val}`)
+      .subscribe();
   });
