@@ -1,5 +1,5 @@
 // Import stylesheets
-import { filter, fromEvent, interval, map, timer } from 'rxjs';
+import { debounceTime, filter, fromEvent, interval, map, timer } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import './style.css';
 
@@ -28,7 +28,8 @@ fromEvent(document.getElementById('input'), 'input')
   .pipe(
     //inserire una catena di operatori che possono anche manipolare lo strem di dati
     map((e) => (e.target as HTMLInputElement).value),
-    filter((text) => text.length > 3)
+    filter((text) => text.length > 3),
+    debounceTime(1000)
   )
   .subscribe((val) => {
     console.log(val);
